@@ -60,7 +60,7 @@ Guided by in-class IoT module standards and Raspberry Pi best practices.
 
 Watch the full system in action (hardware + dashboard):
 
-👉 **[▶️ Watch Demo on YouTube](https://www.youtube.com/watch?v=YOUR_VIDEO_ID_HERE)**  
+👉 **[▶️ Watch Demo on YouTube](https://youtube.com/shorts/6NvQyifem0k?si=NhJyaJJdsLLMG1LM)**  
 
 > The video demonstrates:
 > - Motion detection triggering LED, buzzer, and motor
