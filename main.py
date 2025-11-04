@@ -9,7 +9,6 @@ logging.basicConfig(
 )
 log = logging.getLogger("domisafeapp2")
 
-# Global running flag for graceful shutdown
 RUNNING = True
 
 def stop_all(signum=None, frame=None):
@@ -19,7 +18,6 @@ def stop_all(signum=None, frame=None):
     time.sleep(1)
     sys.exit(0)
 
-# Register signal handlers
 signal.signal(signal.SIGINT, stop_all)
 signal.signal(signal.SIGTERM, stop_all)
 
@@ -28,7 +26,6 @@ def main():
     sec = SecuritySystem()
     env = EnvironmentMonitor()
 
-    # Wait briefly for MQTT readiness
     time.sleep(1.5)
 
     def send_env():
@@ -45,11 +42,27 @@ def main():
         while RUNNING:
             try:
                 s = sec.check()
+
                 mqtt.publish("motion", int(s["motion"]))
                 mqtt.publish("led_status", s["led_status"])
-                mqtt.publish("buzzer_status", s["buzzer_status"])
+
+                # Publish buzzer ON→OFF event
+                if s.get("buzzer_pulsed"):
+                    mqtt.publish("buzzer_status", 1)
+                    time.sleep(0.2)
+                    mqtt.publish("buzzer_status", 0)
+                else:
+                    mqtt.publish("buzzer_status", s["buzzer_status"])
+
+                # Publish motor ON→OFF event
+                if s.get("motor_pulsed"):
+                    mqtt.publish("motor_status", 1)
+                    time.sleep(0.2)
+                    mqtt.publish("motor_status", 0)
+
                 if s["image_b64"]:
                     mqtt.publish("camera_last_image", s["image_b64"])
+
             except Exception as e:
                 log.error(f"Security loop error: {e}")
             time.sleep(5)

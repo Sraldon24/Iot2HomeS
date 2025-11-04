@@ -19,23 +19,39 @@ class SecuritySystem:
         self.cam = CameraHandler()
 
     def _spin_motor(self):
-        if not self.motor: return
+        if not self.motor: 
+            return
+        log.info("Spinning motor for 2s")
         self.motor.on()
         time.sleep(2)
         self.motor.off()
 
     def check(self):
         motion = self.motion.motion_detected if self.motion else False
-        led_status = buzzer_status = 0
+
+        led_status = 0
+        buzzer_status = 0
+        buzzer_pulsed = False
+        motor_pulsed = False
         image = None
 
         if motion:
             log.info("Motion detected.")
-            if self.led: self.led.on(); led_status = 1
-            if self.buzzer: self.buzzer.on(); buzzer_status = 1
+            if self.led:
+                self.led.on()
+                led_status = 1
+            if self.buzzer:
+                self.buzzer.on()
+                buzzer_status = 1
+                buzzer_pulsed = True
             threading.Thread(target=self._spin_motor, daemon=True).start()
+            motor_pulsed = True
+
             time.sleep(0.8)
-            if self.buzzer: self.buzzer.off(); buzzer_status = 0
+            if self.buzzer:
+                self.buzzer.off()
+                buzzer_status = 0
+
             image = self.cam.capture_b64()
         else:
             if self.led: self.led.off()
@@ -46,5 +62,7 @@ class SecuritySystem:
             "motion": motion,
             "led_status": led_status,
             "buzzer_status": buzzer_status,
+            "buzzer_pulsed": buzzer_pulsed,
+            "motor_pulsed": motor_pulsed,
             "image_b64": image
         }
