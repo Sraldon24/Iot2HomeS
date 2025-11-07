@@ -1,11 +1,21 @@
-import time, threading, logging, signal, sys
+import time, threading, logging, signal, sys, os
+from datetime import datetime
 from modules.mqtt_client import MqttClient
 from modules.security_system import SecuritySystem
 from modules.environment_monitor import EnvironmentMonitor
 
+# LOGGING SETUP (new for per-run logs)
+os.makedirs("logs", exist_ok=True)
+timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+log_file = f"logs/run_{timestamp}.log"
+
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler(log_file, mode='w'),
+        logging.StreamHandler()
+    ]
 )
 log = logging.getLogger("domisafeapp2")
 
@@ -72,3 +82,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+    #AUTO-UPLOAD LOGS TO GOOGLE DRIVE (after run ends) 
+    try:
+        os.system("python3 upload_logs.py")
+    except Exception as e:
+        log.error(f"Failed to upload logs: {e}")
