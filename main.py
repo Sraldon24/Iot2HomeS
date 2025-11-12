@@ -3,6 +3,7 @@ from datetime import datetime
 from modules.mqtt_client import MqttClient
 from modules.security_system import SecuritySystem
 from modules.environment_monitor import EnvironmentMonitor
+from modules.local_db import init_db, save_env, save_motion  # ✅ added for local DB
 
 # LOGGING SETUP (new for per-run logs)
 os.makedirs("logs", exist_ok=True)
@@ -36,6 +37,8 @@ def main():
     sec = SecuritySystem()
     env = EnvironmentMonitor()
 
+    init_db()  # ✅ initialize database
+
     time.sleep(1.5)
 
     def send_env():
@@ -44,6 +47,7 @@ def main():
                 data = env.read()
                 mqtt.publish("temperature", data["temperature"])
                 mqtt.publish("humidity", data["humidity"])
+                save_env(data["temperature"], data["humidity"])  # ✅ save locally
             except Exception as e:
                 log.error(f"Env loop error: {e}")
             time.sleep(30)
@@ -72,6 +76,10 @@ def main():
 
                 if s["image_b64"]:
                     mqtt.publish("camera_last_image", s["image_b64"])
+
+                # ✅ save motion event if detected
+                if s["motion"]:
+                    save_motion(1)
 
             except Exception as e:
                 log.error(f"Security loop error: {e}")

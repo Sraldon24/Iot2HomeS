@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<section>
+  <h2>📊 Current Status</h2>
+  <p><b>Time:</b> {{ env[0] }}</p>
+  <p><b>Temperature:</b> {{ env[1] }} °C</p>
+  <p><b>Humidity:</b> {{ env[2] }} %</p>
+
+  <h3>Recent Motion Events</h3>
+  <ul>
+    {% for m in motion %}
+    <li>{{ m[0] }} — Detected: {{ m[1] }}</li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}

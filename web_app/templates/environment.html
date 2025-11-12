@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>🌦 Environment Data</h2>
+<canvas id="tempChart" width="400" height="200"></canvas>
+<script>
+const labels = {{ timestamps|tojson }};
+const temps = {{ temps|tojson }};
+const hums  = {{ hums|tojson }};
+new Chart(document.getElementById('tempChart'), {
+  type: 'line',
+  data: {
+    labels: labels,
+    datasets: [
+      { label: 'Temperature (°C)', data: temps, borderColor: 'red', fill: false },
+      { label: 'Humidity (%)', data: hums, borderColor: 'blue', fill: false }
+    ]
+  }
+});
+</script>
+{% endblock %}

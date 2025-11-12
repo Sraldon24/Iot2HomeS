@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>🚨 Security Log</h2>
+<table>
+<tr><th>Time</th><th>Motion</th><th>Image</th></tr>
+{% for m in motion %}
+<tr>
+  <td>{{ m[0] }}</td>
+  <td>{{ m[1] }}</td>
+  <td>{% if m[2] %}<img src="/images/{{ m[2] }}" width="80">{% else %}-{% endif %}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

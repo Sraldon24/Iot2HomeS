@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>🕹 Device Control</h2>
+<form method="POST">
+  <label>Device:</label>
+  <select name="device">
+    <option value="led_status">LED</option>
+    <option value="buzzer_status">Buzzer</option>
+    <option value="motor_status">Fan</option>
+  </select>
+  <label>Value:</label>
+  <select name="value">
+    <option value="1">ON</option>
+    <option value="0">OFF</option>
+  </select>
+  <button type="submit">Send</button>
+</form>
+{% endblock %}

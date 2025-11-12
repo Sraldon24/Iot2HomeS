@@ -1,1 +1,2 @@
 https://github.com/Sraldon24/Iot2HomeS
+#sudo python3 -m pip install psycopg2-binary --break-system-packages
